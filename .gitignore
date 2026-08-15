@@ -1,0 +1,48 @@
+# ============================================================
+# MedCode .gitignore
+# ============================================================
+
+# ----- Python -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ----- Virtual Environment -----
+backend/venv/
+venv/
+.venv/
+ENV/
+
+# ----- Django -----
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+*.log
+
+# ----- Environment Variables -----
+.env
+!.env.example
+
+# ----- Node / Frontend -----
+frontend/node_modules/
+frontend/dist/
+frontend/.tsbuildinfo
+
+# ----- IDE -----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ----- OS -----
+*.tmp
+*.bak
+*.orig
