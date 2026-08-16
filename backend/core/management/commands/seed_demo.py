@@ -43,6 +43,7 @@ class Command(BaseCommand):
                 "username": "pharmacist_demo",
                 "full_name": "Demo Pharmacist",
                 "role": "PHARMACIST",
+                "is_active": True,
             }
         )
         pharma_user.set_password("MedCode@12345!")
@@ -54,6 +55,7 @@ class Command(BaseCommand):
                 "username": "government_demo",
                 "full_name": "Government Officer",
                 "role": "GOVERNMENT",
+                "is_active": True,
             }
         )
         gov_user.set_password("MedCode@12345!")
