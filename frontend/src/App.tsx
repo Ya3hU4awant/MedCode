@@ -20,6 +20,8 @@ import GovShortages from "./pages/government/Shortages";
 import GovPrices from "./pages/government/Prices";
 import GovAlerts from "./pages/government/Alerts";
 
+import PharmacistSignup from "./pages/auth/PharmacistSignup";
+
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: "PHARMACIST" | "GOVERNMENT" }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500 font-medium animate-pulse">Loading MedCode...</div>;
@@ -37,6 +39,7 @@ export default function App() {
         <ToastProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/pharmacist/signup" element={<PharmacistSignup />} />
 
             {/* Pharmacist Routes */}
             <Route path="/pharmacist" element={<ProtectedRoute role="PHARMACIST"><AppLayout /></ProtectedRoute>}>

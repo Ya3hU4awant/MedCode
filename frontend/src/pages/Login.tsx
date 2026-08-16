@@ -1,6 +1,6 @@
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Lock, Mail, ArrowRight, Eye, EyeOff, Activity, Building2, Pill } from "lucide-react";
+import { ShieldCheck, Lock, Mail, ArrowRight, Eye, EyeOff, Activity, Pill } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
@@ -29,11 +29,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const useDemo = (role: "GOVERNMENT" | "PHARMACIST") => {
-    setEmail(role === "GOVERNMENT" ? "government@medcode.demo" : "pharmacist@medcode.demo");
-    setPassword("MedCode@12345!");
   };
 
   return (
@@ -186,19 +181,11 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Demo Controls */}
-          <div className="mt-12 pt-8 border-t border-[#CBD5E1]/50">
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wider text-center mb-4">Development & Demo Access</p>
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => useDemo("PHARMACIST")} type="button"
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[#CBD5E1] bg-white text-[#0F172A] font-semibold text-sm shadow-sm hover:border-[#19B5D8] hover:bg-[#19B5D8]/5 transition-colors">
-                <Building2 size={16} className="text-[#64748B]" /> Pharmacist
-              </button>
-              <button onClick={() => useDemo("GOVERNMENT")} type="button"
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[#CBD5E1] bg-white text-[#0F172A] font-semibold text-sm shadow-sm hover:border-[#1769E0] hover:bg-[#1769E0]/5 transition-colors">
-                <ShieldCheck size={16} className="text-[#64748B]" /> Government
-              </button>
-            </div>
+          <div className="mt-8 text-center">
+            <p className="text-[#64748B] text-sm">Don't have a pharmacist account?</p>
+            <button onClick={() => navigate("/pharmacist/signup")} className="mt-1 font-semibold text-[#1769E0] hover:text-[#0B1F3A] transition-colors">
+              Create Pharmacist Account
+            </button>
           </div>
         </motion.div>
       </div>

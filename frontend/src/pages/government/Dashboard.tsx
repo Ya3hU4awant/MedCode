@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import { getGovDashboard, getGovPharmacies } from "../../services/government";
 import type { DashboardData } from "../../types";
 import type { Pharmacy } from "../../types/pharmacy";
@@ -13,7 +12,7 @@ import { motion } from "framer-motion";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
-// Leaflet icon fix
+// Default options
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
@@ -21,13 +20,28 @@ L.Icon.Default.mergeOptions({
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
+const getMarkerIcon = (status: string) => {
+    let color = "#16A34A"; // ACTIVE
+    if (status === "PENDING") color = "#F59E0B";
+    if (status === "INACTIVE") color = "#DC2626";
+
+    return L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.4);"></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+};
+
 export default function GovDashboard() {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [data, setData] = useState<DashboardData | null>(null);
     const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const filteredPharmacies = pharmacies.filter(p => p.pharmacy_name.toLowerCase().includes(searchQuery.toLowerCase()) || p.district.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const load = async () => {
         setLoading(true);
@@ -73,7 +87,7 @@ export default function GovDashboard() {
                 <StatCard label="Price Anomalies" value={data.price_alerts} icon={<TrendingUp size={20} />} color="text-amber-600 bg-amber-100" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                 {/* Alerts by severity */}
                 <motion.div
                     whileHover={{ y: -3, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.1)" }}
@@ -101,23 +115,63 @@ export default function GovDashboard() {
                         <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
                             <MapPin size={16} className="text-[#1769E0]" /> Regional Pharmacy Network
                         </h3>
-                        <span className="text-xs font-semibold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">Live view</span>
+                        <span className="text-xs font-semibold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">{pharmacies.length} monitored pharmacies</span>
                     </div>
                     <div className="flex-1 w-full h-full relative z-0">
-                        <MapContainer center={[19.8762, 75.3433]} zoom={6} className="w-full h-full min-h-[300px]">
+                        <MapContainer center={[19.8762, 75.3433]} zoom={12} className="w-full h-full min-h-[300px]">
                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
                             {pharmacies.filter(p => p.latitude && p.longitude).map(p => (
-                                <Marker key={p.id} position={[p.latitude, p.longitude]}>
+                                <Marker
+                                    key={p.id}
+                                    position={[p.latitude as number, p.longitude as number]}
+                                    icon={getMarkerIcon(p.status)}
+                                >
                                     <Popup>
-                                        <div className="font-sans">
+                                        <div className="font-sans min-w-[200px]">
                                             <strong className="block text-sm mb-1">{p.pharmacy_name}</strong>
-                                            <span className="text-xs text-gray-500 block">{p.district}, {p.state}</span>
-                                            <button onClick={() => navigate(`/government/pharmacies/${p.id}`)} className="mt-2 w-full text-xs bg-[#1769E0] text-white py-1 rounded">View Details</button>
+                                            <span className="text-xs text-gray-500 block mb-1">{p.address}, {p.district}</span>
+                                            <span className={`text-[10px] uppercase px-1.5 py-0.5 rounded-sm font-bold ${p.status === "ACTIVE" ? "bg-emerald-100 text-emerald-700" :
+                                                p.status === "PENDING" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
+                                                }`}>{p.status}</span>
+                                            <button onClick={() => navigate(`/government/pharmacies/${p.id}`)} className="mt-3 w-full text-xs font-semibold bg-[#1769E0] hover:bg-[#0B1F3A] text-white py-1.5 transition-colors rounded">View Details</button>
                                         </div>
                                     </Popup>
                                 </Marker>
                             ))}
                         </MapContainer>
+                    </div>
+                </div>
+
+                {/* Sidebar Network List */}
+                <div className="lg:col-span-1 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col max-h-[420px] overflow-hidden">
+                    <div className="p-4 border-b border-slate-200 bg-slate-50">
+                        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center justify-between">
+                            Network Focus
+                            <span className="bg-[#1769E0] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full leading-none">{pharmacies.length}</span>
+                        </h3>
+                        <input
+                            type="text"
+                            placeholder="Search pharmacies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="mt-3 w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1769E0]/20"
+                        />
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-2">
+                        {filteredPharmacies.length === 0 ? (
+                            <p className="text-center text-slate-500 text-xs py-4">No pharmacies match search.</p>
+                        ) : (
+                            filteredPharmacies.map(p => (
+                                <div key={p.id} onClick={() => navigate(`/government/pharmacies/${p.id}`)} className="p-3 mb-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 cursor-pointer transition-all">
+                                    <div className="flex items-start justify-between mb-1">
+                                        <h4 className="text-sm font-bold text-slate-800 truncate pr-2">{p.pharmacy_name}</h4>
+                                        <div className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${p.status === 'ACTIVE' ? 'bg-emerald-500' : p.status === 'PENDING' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                    </div>
+                                    <p className="text-xs text-slate-500 truncate">{p.district}</p>
+                                    <p className="text-[10px] font-mono text-slate-400 mt-1">{p.license_number}</p>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

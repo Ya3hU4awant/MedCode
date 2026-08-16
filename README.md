@@ -57,3 +57,18 @@ npm run dev
 
 The frontend will start at `http://localhost:5173` and the backend will start at `http://localhost:8000`.
 They are connected via Vite proxy and Django CORS configuration.
+
+## Deployment
+
+### Render Deployment (Backend)
+1. Provide a `DATABASE_URL` pointing to **Supabase PostgreSQL**.
+2. Connect your repository to Render using a Web Service.
+3. Render is automatically configured by `render.yaml`.
+   - Build Command: `pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput`
+   - Start Command: `gunicorn medcode.wsgi:application`
+
+### UptimeRobot Setup
+To keep the Render backend active and monitor its health:
+Monitor Type: HTTP(s)
+URL: `https://YOUR-RENDER-BACKEND.onrender.com/api/health/`
+Interval: 5 minutes

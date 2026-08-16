@@ -8,5 +8,6 @@ from rest_framework.response import Response
 def health_check(request):
     return Response({
         "success": True,
-        "message": "MedCode API is running.",
+        "message": "MedCode API is running",
+        "status": "healthy"
     })
