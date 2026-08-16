@@ -14,12 +14,12 @@ export const registerPharmacist = (data: {
     pincode: string;
     latitude?: number | null;
     longitude?: number | null;
-}) => api.post("/api/auth/register/", data);
+}) => api.post("/auth/register/", data);
 
 export const login = (email: string, password: string) =>
-    api.post("/api/auth/login/", { email, password });
+    api.post("/auth/login/", { email, password });
 
-export const getMe = () => api.get("/api/auth/me/");
+export const getMe = () => api.get("/auth/me/");
 
 export const refreshToken = (refresh: string) =>
-    api.post("/api/auth/token/refresh/", { refresh });
+    api.post("/auth/token/refresh/", { refresh });

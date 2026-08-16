@@ -1,4 +1,5 @@
-import { X, type ReactNode } from "lucide-react";
+import { type ReactNode } from "react";
+import { X } from "lucide-react";
 
 interface ModalProps {
     open: boolean;

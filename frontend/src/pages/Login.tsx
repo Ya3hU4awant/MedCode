@@ -1,6 +1,16 @@
-import { FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Lock, Mail, ArrowRight, Eye, EyeOff, Activity, Pill } from "lucide-react";
+import {
+  ShieldCheck,
+  Lock,
+  Mail,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Activity,
+  Pill,
+  Building2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
@@ -107,7 +117,6 @@ export default function Login() {
 
         <div className="z-10 relative mt-auto flex justify-between items-center text-sm text-white/60">
           <p>&copy; {new Date().getFullYear()} MedCode System</p>
-          <p>Hackathon Ready Demo</p>
         </div>
       </div>
 

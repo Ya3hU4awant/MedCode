@@ -69,7 +69,7 @@ export default function PharmacistSignup() {
         if (!validateStep2()) return;
         setLoading(true);
         try {
-            await api.post("/api/auth/register/", {
+            await api.post("/auth/register/", {
                 full_name: form.full_name,
                 email: form.email,
                 phone: form.phone,
