@@ -34,4 +34,19 @@ urlpatterns = [
         "api/pharmacy/",
         include("pharmacies.urls"),
     ),
+
+    path(
+        "api/medicines/",
+        include("medicines.urls"),
+    ),
+
+    path(
+        "api/government/",
+        include("government.urls"),
+    ),
+
+    path(
+        "api/public/",
+        include("public_api.urls"),
+    ),
 ]
