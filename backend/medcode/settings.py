@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,12 +43,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party
+
     "rest_framework",
-    "rest_framework_simplejwt",
     "corsheaders",
     "django_filters",
-    # MedCode apps
+
     "accounts",
     "pharmacies",
     "medicines",
@@ -145,7 +145,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Custom User Model (will be defined in Phase 2)
 # ---------------------------------------------------------------------------
 
-# AUTH_USER_MODEL = "accounts.User"  # Uncomment in Phase 2
+AUTH_USER_MODEL = "accounts.User"  # Uncomment in Phase 2
 
 
 # ---------------------------------------------------------------------------
@@ -178,8 +178,8 @@ REST_FRAMEWORK = {
 # ---------------------------------------------------------------------------
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
