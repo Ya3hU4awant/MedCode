@@ -11,6 +11,7 @@ import PharmaBatches from "./pages/pharmacist/Batches";
 import PharmaShortages from "./pages/pharmacist/Shortages";
 import PharmaMedicines from "./pages/pharmacist/Medicines";
 import PharmacyProfile from "./pages/pharmacist/PharmacyProfile";
+import GenerateBill from "./pages/pharmacist/GenerateBill";
 
 // Government Pages
 import GovDashboard from "./pages/government/Dashboard";
@@ -21,6 +22,11 @@ import GovPrices from "./pages/government/Prices";
 import GovAlerts from "./pages/government/Alerts";
 
 import PharmacistSignup from "./pages/auth/PharmacistSignup";
+
+// Citizen Pages
+import CitizenPortal from "./pages/citizen/CitizenPortal";
+import CitizenMedicines from "./pages/citizen/CitizenMedicines";
+import CitizenComplaint from "./pages/citizen/CitizenComplaint";
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: "PHARMACIST" | "GOVERNMENT" }) {
   const { user, loading } = useAuth();
@@ -41,6 +47,11 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/pharmacist/signup" element={<PharmacistSignup />} />
 
+            {/* Citizen Routes */}
+            <Route path="/citizen" element={<CitizenPortal />} />
+            <Route path="/citizen/medicines" element={<CitizenMedicines />} />
+            <Route path="/citizen/complaint" element={<CitizenComplaint />} />
+
             {/* Pharmacist Routes */}
             <Route path="/pharmacist" element={<ProtectedRoute role="PHARMACIST"><AppLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<PharmaDashboard />} />
@@ -49,6 +60,7 @@ export default function App() {
               <Route path="shortages" element={<PharmaShortages />} />
               <Route path="medicines" element={<PharmaMedicines />} />
               <Route path="pharmacy" element={<PharmacyProfile />} />
+              <Route path="billing" element={<GenerateBill />} />
               <Route index element={<Navigate to="dashboard" replace />} />
             </Route>
 

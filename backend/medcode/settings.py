@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "alerts",
     "government",
     "public_api",
+    "complaints",
 ]
 
 MIDDLEWARE = [

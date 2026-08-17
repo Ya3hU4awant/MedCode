@@ -3,7 +3,8 @@ from .views import (
     PublicMedicineListView,
     PublicMedicineDetailView,
     PublicPharmacyListView,
-    PublicPharmacyDetailView
+    PublicPharmacyDetailView,
+    PublicPriceIntelligenceView,
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('medicines/<uuid:pk>/', PublicMedicineDetailView.as_view(), name='public-medicine-detail'),
     path('pharmacies/', PublicPharmacyListView.as_view(), name='public-pharmacies'),
     path('pharmacies/<uuid:pk>/', PublicPharmacyDetailView.as_view(), name='public-pharmacy-detail'),
+    path('prices/', PublicPriceIntelligenceView.as_view(), name='public-prices'),
 ]

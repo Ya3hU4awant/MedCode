@@ -49,4 +49,9 @@ urlpatterns = [
         "api/public/",
         include("public_api.urls"),
     ),
+
+    path(
+        "api/complaints/",
+        include("complaints.urls"),
+    ),
 ]

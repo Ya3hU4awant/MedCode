@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { motion } from "framer-motion";
 import {
     Building2, Pill, AlertTriangle, TrendingUp, ShieldCheck,
-    LayoutDashboard, Package, FileWarning, Map, LogOut
+    LayoutDashboard, Package, FileWarning, Map, LogOut, FileText
 } from "lucide-react";
 
 export default function Sidebar({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) {
@@ -16,6 +16,7 @@ export default function Sidebar({ open, setOpen }: { open: boolean, setOpen: (op
         { to: "/pharmacist/shortages", label: "Report Shortage", icon: AlertTriangle },
         { to: "/pharmacist/medicines", label: "Medicine Catalog", icon: Map },
         { to: "/pharmacist/pharmacy", label: "Pharmacy Profile", icon: Building2 },
+        { to: "/pharmacist/billing", label: "Generate Bill", icon: FileText },
     ];
 
     const govLinks = [

@@ -190,10 +190,24 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="mt-8 text-center">
+          <div className="mt-8 text-center pb-6 border-b border-[#E2E8F0]">
             <p className="text-[#64748B] text-sm">Don't have a pharmacist account?</p>
             <button onClick={() => navigate("/pharmacist/signup")} className="mt-1 font-semibold text-[#1769E0] hover:text-[#0B1F3A] transition-colors">
               Create Pharmacist Account
+            </button>
+          </div>
+
+          <div className="mt-8">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-bold text-[#0F172A]">Citizen Access</h3>
+              <p className="text-[#64748B] text-sm mt-1">Track medicine prices, availability and report complaints.</p>
+            </div>
+            <button
+              onClick={() => navigate("/citizen")}
+              className="w-full bg-white border border-[#CBD5E1] hover:border-[#19B5D8] text-[#0F172A] hover:text-[#19B5D8] py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm hover:shadow-md"
+            >
+              Continue as Citizen
+              <ArrowRight size={18} />
             </button>
           </div>
         </motion.div>
