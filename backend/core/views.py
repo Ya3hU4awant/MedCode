@@ -9,5 +9,5 @@ def health_check(request):
     return Response({
         "success": True,
         "message": "MedCode API is running",
-        "status": "healthy"
+        "status": "healthy",
     })

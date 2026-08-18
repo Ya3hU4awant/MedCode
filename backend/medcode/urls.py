@@ -3,53 +3,50 @@ MedCode URL Configuration
 """
 
 from django.contrib import admin
-from django.urls import path, include
-from django.http import JsonResponse
-
-
-def health_check(request):
-    """Simple health check endpoint for testing connectivity."""
-    return JsonResponse({
-        "success": True,
-        "message": "MedCode API is running",
-        "version": "0.1.0",
-        "status": "healthy",
-    })
+from django.urls import include, path
 
 
 urlpatterns = [
+    # Django Admin
     path("admin/", admin.site.urls),
 
+    # Health check
     path(
         "api/health/",
         include("core.urls"),
     ),
 
+    # Authentication
     path(
         "api/auth/",
         include("accounts.urls"),
     ),
 
+    # Pharmacist / Pharmacy
     path(
         "api/pharmacy/",
         include("pharmacies.urls"),
     ),
 
+    # Medicines & Inventory
     path(
         "api/medicines/",
         include("medicines.urls"),
     ),
 
+    # Government Dashboard
     path(
         "api/government/",
         include("government.urls"),
     ),
 
+    # Citizen / Public APIs
     path(
         "api/public/",
         include("public_api.urls"),
     ),
 
+    # Citizen Complaints
     path(
         "api/complaints/",
         include("complaints.urls"),

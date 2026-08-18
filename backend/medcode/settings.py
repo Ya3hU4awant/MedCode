@@ -7,36 +7,51 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
-
 import environ
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+# =============================================================================
+# BASE CONFIGURATION
+# =============================================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Environment variables
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+
 env = environ.Env(
     DEBUG=(bool, True),
     ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
     CORS_ALLOWED_ORIGINS=(list, ["http://localhost:5173"]),
+    CSRF_TRUSTED_ORIGINS=(list, []),
 )
 
-# Read .env file
+# Read backend/.env if it exists
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-dev-key-change-in-production")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# =============================================================================
+# SECURITY
+# =============================================================================
+
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="django-insecure-dev-key-change-in-production",
+)
+
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 
-# ---------------------------------------------------------------------------
-# Application definition
-# ---------------------------------------------------------------------------
+# =============================================================================
+# APPLICATIONS
+# =============================================================================
 
 INSTALLED_APPS = [
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,10 +59,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # Third-party
     "rest_framework",
     "corsheaders",
     "django_filters",
 
+    # MedCode apps
     "core",
     "accounts",
     "pharmacies",
@@ -59,10 +76,19 @@ INSTALLED_APPS = [
     "complaints",
 ]
 
+
+# =============================================================================
+# MIDDLEWARE
+# =============================================================================
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+
+    # Serve static files efficiently in production
     "whitenoise.middleware.WhiteNoiseMiddleware",
+
     "corsheaders.middleware.CorsMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -71,12 +97,26 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
+# =============================================================================
+# URL / WSGI
+# =============================================================================
+
 ROOT_URLCONF = "medcode.urls"
+
+WSGI_APPLICATION = "medcode.wsgi.application"
+
+
+# =============================================================================
+# TEMPLATES
+# =============================================================================
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -88,86 +128,144 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "medcode.wsgi.application"
+
+# =============================================================================
+# DATABASE
+# =============================================================================
+#
+# LOCAL:
+#   Uses SQLite automatically if DATABASE_URL is not present.
+#
+# PRODUCTION:
+#   Uses Supabase PostgreSQL through DATABASE_URL.
+#
+# Example:
+#
+# DATABASE_URL=postgresql://postgres:password@host:5432/postgres?sslmode=require
+#
+# =============================================================================
+
+DATABASE_URL = env("DATABASE_URL", default="")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": env.db("DATABASE_URL"),
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
-# ---------------------------------------------------------------------------
-# Database
-# ---------------------------------------------------------------------------
-# Phase 1: SQLite for local development
-# Phase 2: Switch to Supabase PostgreSQL
-
-DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-    )
-}
-
-
-# ---------------------------------------------------------------------------
-# Password validation
-# ---------------------------------------------------------------------------
+# =============================================================================
+# PASSWORD VALIDATION
+# =============================================================================
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        )
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "MinimumLengthValidator"
+        )
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        )
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "NumericPasswordValidator"
+        )
+    },
 ]
 
 
-# ---------------------------------------------------------------------------
-# Internationalization
-# ---------------------------------------------------------------------------
+# =============================================================================
+# INTERNATIONALIZATION
+# =============================================================================
 
 LANGUAGE_CODE = "en-us"
+
 TIME_ZONE = "Asia/Kolkata"
+
 USE_I18N = True
+
 USE_TZ = True
 
 
-# ---------------------------------------------------------------------------
-# Static files
-# ---------------------------------------------------------------------------
+# =============================================================================
+# STATIC FILES
+# =============================================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+)
 
 
-# ---------------------------------------------------------------------------
-# Default primary key field type
-# ---------------------------------------------------------------------------
+# =============================================================================
+# MEDIA FILES
+# =============================================================================
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media"
+
+
+# =============================================================================
+# DEFAULT PRIMARY KEY
+# =============================================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# ---------------------------------------------------------------------------
-# Custom User Model (will be defined in Phase 2)
-# ---------------------------------------------------------------------------
+# =============================================================================
+# CUSTOM USER MODEL
+# =============================================================================
 
-AUTH_USER_MODEL = "accounts.User"  # Uncomment in Phase 2
+AUTH_USER_MODEL = "accounts.User"
 
 
-# ---------------------------------------------------------------------------
-# Django REST Framework
-# ---------------------------------------------------------------------------
+# =============================================================================
+# DJANGO REST FRAMEWORK
+# =============================================================================
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+
+    "DEFAULT_PAGINATION_CLASS": (
+        "rest_framework.pagination.PageNumberPagination"
+    ),
+
     "PAGE_SIZE": 20,
+
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -175,50 +273,98 @@ REST_FRAMEWORK = {
 }
 
 
-# ---------------------------------------------------------------------------
-# JWT Settings
-# ---------------------------------------------------------------------------
+# =============================================================================
+# JWT
+# =============================================================================
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
     "ROTATE_REFRESH_TOKENS": True,
+
     "BLACKLIST_AFTER_ROTATION": True,
+
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 
-# ---------------------------------------------------------------------------
-# CORS Settings
-# ---------------------------------------------------------------------------
+# =============================================================================
+# CORS
+# =============================================================================
 
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGINS = env(
+    "CORS_ALLOWED_ORIGINS"
+)
+
 CORS_ALLOW_CREDENTIALS = True
 
 
-# ---------------------------------------------------------------------------
-# Logging (basic)
-# ---------------------------------------------------------------------------
+# =============================================================================
+# CSRF
+# =============================================================================
+
+CSRF_TRUSTED_ORIGINS = env(
+    "CSRF_TRUSTED_ORIGINS"
+)
+
+
+# =============================================================================
+# PRODUCTION SECURITY
+# =============================================================================
+
+if not DEBUG:
+
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
+
+    SESSION_COOKIE_SECURE = True
+
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_BROWSER_XSS_FILTER = True
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+    X_FRAME_OPTIONS = "DENY"
+
+
+# =============================================================================
+# LOGGING
+# =============================================================================
 
 LOGGING = {
     "version": 1,
+
     "disable_existing_loggers": False,
+
     "formatters": {
         "verbose": {
-            "format": "[{asctime}] {levelname} {name}: {message}",
+            "format": (
+                "[{asctime}] "
+                "{levelname} "
+                "{name}: "
+                "{message}"
+            ),
             "style": "{",
         },
     },
+
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
     },
+
     "root": {
         "handlers": ["console"],
         "level": "INFO",
     },
+
     "loggers": {
         "django": {
             "handlers": ["console"],
