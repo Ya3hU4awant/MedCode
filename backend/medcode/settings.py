@@ -157,6 +157,12 @@ if DATABASE_URL:
     DATABASES = {
         "default": env.db("DATABASE_URL"),
     }
+
+    if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+        DATABASES["default"]["OPTIONS"] = {
+            "sslmode": "require",
+            "connect_timeout": 15,
+        }
 else:
     DATABASES = {
         "default": {
