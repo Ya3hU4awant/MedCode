@@ -1,17 +1,16 @@
 services:
-  # =========================
-  # Django API
-  # =========================
+  # Django Backend
   - type: web
-    runtime: python
     name: medcode-backend
+    runtime: python
     rootDir: backend
     region: singapore
     plan: free
 
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    preDeployCommand: python manage.py migrate
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+
     startCommand: gunicorn medcode.wsgi:application
+
     healthCheckPath: /api/health/
 
     envVars:
@@ -24,30 +23,26 @@ services:
       - key: DEBUG
         value: "False"
 
-      # Your existing Supabase PostgreSQL database.
-      # Enter the real value in Render; do NOT commit it here.
       - key: DATABASE_URL
         sync: false
 
       - key: ALLOWED_HOSTS
         value: "medcode-backend.onrender.com,localhost,127.0.0.1"
 
-      # Change this if Render gives your frontend a different hostname
-      # or if you later add a custom domain.
       - key: CORS_ALLOWED_ORIGINS
         value: "https://medcode-frontend.onrender.com,http://localhost:5173"
 
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://medcode-frontend.onrender.com,http://localhost:5173"
 
-  # =========================
-  # React/Vite frontend
-  # =========================
+  # React Frontend
   - type: web
-    runtime: static
     name: medcode-frontend
+    runtime: static
     rootDir: frontend
+
     buildCommand: npm ci && npm run build
+
     staticPublishPath: dist
 
     routes:

@@ -159,10 +159,11 @@ if DATABASE_URL:
     }
 
     if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
-        DATABASES["default"]["OPTIONS"] = {
+        DATABASES["default"].setdefault("OPTIONS", {})
+        DATABASES["default"]["OPTIONS"].update({
             "sslmode": "require",
             "connect_timeout": 15,
-        }
+        })
 else:
     DATABASES = {
         "default": {
@@ -170,7 +171,6 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 
 # =============================================================================
 # PASSWORD VALIDATION
