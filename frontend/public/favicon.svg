@@ -1,11 +1,30 @@
-
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#0f2747"/>
-  <path d="M32 8 49 15v14c0 12-7 21-17 27C22 50 15 41 15 29V15z"
-        fill="none" stroke="#22d3ee" stroke-width="3.5"
-        stroke-linejoin="round"/>
-  <path d="M32 21v20M22 31h20"
-        stroke="#22d3ee" stroke-width="4"
-        stroke-linecap="round"/>
-</svg>
+  <defs>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22f5d0"/>
+      <stop offset="100%" stop-color="#00d9a6"/>
+    </linearGradient>
+  </defs>
 
+  <!-- Background -->
+  <rect width="64" height="64" rx="15" fill="#0f2747"/>
+
+  <!-- Shield -->
+  <path
+    d="M32 7 L51 15 V29 C51 42 43 52 32 58 C21 52 13 42 13 29 V15 Z"
+    fill="none"
+    stroke="url(#teal)"
+    stroke-width="3.5"
+    stroke-linejoin="round"
+  />
+
+  <!-- Right check mark -->
+  <path
+    d="M22 32 L29 39 L43 24"
+    fill="none"
+    stroke="url(#teal)"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
